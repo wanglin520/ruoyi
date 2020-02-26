@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.mnt.mapper.SysServerMapper">
+
+    <resultMap type="SysServer" id="SysServerResult">
+        <result property="id" column="id"/>
+        <result property="account" column="account"/>
+        <result property="ip" column="ip"/>
+        <result property="name" column="name"/>
+        <result property="password" column="password"/>
+        <result property="port" column="port"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectSysServerVo">
+        select id, account, ip, name, password, port, create_time from sys_server
+    </sql>
+
+    <select id="selectSysServerList" parameterType="SysServer" resultMap="SysServerResult">
+        <include refid="selectSysServerVo"/>
+        <where>
+            <if test="ip != null  and ip != ''">
+                and ip = #{ip}
+            </if>
+            <if test="name != null  and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSysServerById" parameterType="Long" resultMap="SysServerResult">
+        <include refid="selectSysServerVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="queryServerSelect" resultType="com.ruoyi.project.mnt.domain.SysServer">
+        <include refid="selectSysServerVo"/>
+    </select>
+
+    <insert id="insertSysServer" parameterType="SysServer" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into sys_server
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="account != null  and account != ''">account,
+            </if>
+            <if test="ip != null  and ip != ''">ip,
+            </if>
+            <if test="name != null  and name != ''">name,
+            </if>
+            <if test="password != null  and password != ''">password,
+            </if>
+            <if test="port != null ">port,
+            </if>
+            <if test="createTime != null ">create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="account != null  and account != ''">#{account},
+            </if>
+            <if test="ip != null  and ip != ''">#{ip},
+            </if>
+            <if test="name != null  and name != ''">#{name},
+            </if>
+            <if test="password != null  and password != ''">#{password},
+            </if>
+            <if test="port != null ">#{port},
+            </if>
+            <if test="createTime != null ">#{createTime},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSysServer" parameterType="SysServer">
+        update sys_server
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="account != null  and account != ''">account = #{account},
+            </if>
+            <if test="ip != null  and ip != ''">ip = #{ip},
+            </if>
+            <if test="name != null  and name != ''">name = #{name},
+            </if>
+            <if test="password != null  and password != ''">password = #{password},
+            </if>
+            <if test="port != null ">port = #{port},
+            </if>
+            <if test="createTime != null ">create_time = #{createTime},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysServerById" parameterType="Long">
+        delete from sys_server where id = #{id}
+    </delete>
+
+    <delete id="deleteSysServerByIds" parameterType="String">
+        delete from sys_server where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

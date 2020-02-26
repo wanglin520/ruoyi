@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.tool.email.mapper.SysEmailConfigMapper">
+
+    <resultMap type="SysEmailConfig" id="SysEmailConfigResult">
+        <result property="id" column="id"/>
+        <result property="fromUser" column="from_user"/>
+        <result property="host" column="host"/>
+        <result property="password" column="password"/>
+        <result property="port" column="port"/>
+        <result property="username" column="username"/>
+    </resultMap>
+
+    <sql id="selectSysEmailConfigVo">
+        select id, from_user, host, password, port, username from sys_email_config
+    </sql>
+
+    <select id="selectSysEmailConfigList" parameterType="SysEmailConfig" resultMap="SysEmailConfigResult">
+        <include refid="selectSysEmailConfigVo"/>
+        <where>
+            <if test="fromUser != null  and fromUser != ''">
+                and from_user = #{fromUser}
+            </if>
+            <if test="host != null  and host != ''">
+                and host = #{host}
+            </if>
+            <if test="password != null  and password != ''">
+                and password = #{password}
+            </if>
+            <if test="port != null  and port != ''">
+                and port = #{port}
+            </if>
+            <if test="username != null  and username != ''">
+                and username like concat('%', #{username}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSysEmailConfigByEmail" parameterType="String" resultMap="SysEmailConfigResult">
+        <include refid="selectSysEmailConfigVo"/>
+        where from_user = #{email}
+    </select>
+
+    <insert id="insertSysEmailConfig" parameterType="SysEmailConfig" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into sys_email_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fromUser != null  and fromUser != ''">from_user,
+            </if>
+            <if test="host != null  and host != ''">host,
+            </if>
+            <if test="password != null  and password != ''">password,
+            </if>
+            <if test="port != null  and port != ''">port,
+            </if>
+            <if test="username != null  and username != ''">username,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fromUser != null  and fromUser != ''">#{fromUser},
+            </if>
+            <if test="host != null  and host != ''">#{host},
+            </if>
+            <if test="password != null  and password != ''">#{password},
+            </if>
+            <if test="port != null  and port != ''">#{port},
+            </if>
+            <if test="username != null  and username != ''">#{username},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSysEmailConfig" parameterType="SysEmailConfig">
+        update sys_email_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fromUser != null  and fromUser != ''">from_user = #{fromUser},
+            </if>
+            <if test="host != null  and host != ''">host = #{host},
+            </if>
+            <if test="password != null  and password != ''">password = #{password},
+            </if>
+            <if test="port != null  and port != ''">port = #{port},
+            </if>
+            <if test="username != null  and username != ''">username = #{username},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+</mapper>

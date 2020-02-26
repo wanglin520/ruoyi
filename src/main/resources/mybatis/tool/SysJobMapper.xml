@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.tool.job.mapper.SysJobMapper">
+
+    <resultMap type="SysJob" id="SysJobResult">
+        <result property="id" column="id"/>
+        <result property="beanName" column="bean_name"/>
+        <result property="cronExpression" column="cron_expression"/>
+        <result property="isPause" column="is_pause"/>
+        <result property="jobName" column="job_name"/>
+        <result property="methodName" column="method_name"/>
+        <result property="jobParams" column="job_params"/>
+        <result property="remark" column="remark"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectSysJobVo">
+        select id, bean_name, cron_expression, is_pause, job_name, method_name, job_params, remark, create_time from sys_job
+    </sql>
+
+    <select id="selectSysJobList" parameterType="SysJob" resultMap="SysJobResult">
+        <include refid="selectSysJobVo"/>
+        <where>
+            <if test="beanName != null  and beanName != ''">
+                and bean_name like concat('%', #{beanName}, '%')
+            </if>
+            <if test="cronExpression != null  and cronExpression != ''">
+                and cron_expression = #{cronExpression}
+            </if>
+            <if test="isPause != null and isPause != ''">
+                and is_pause = #{isPause}
+            </if>
+            <if test="jobName != null  and jobName != ''">
+                and job_name like concat('%', #{jobName}, '%')
+            </if>
+            <if test="methodName != null  and methodName != ''">
+                and method_name like concat('%', #{methodName}, '%')
+            </if>
+            <if test="jobParams != null  and jobParams != ''">
+                and job_params = #{jobParams}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSysJobById" parameterType="Long" resultMap="SysJobResult">
+        <include refid="selectSysJobVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="findByIsPauseIsFalse" resultMap="SysJobResult">
+        <include refid="selectSysJobVo"/>
+        where is_pause = '0'
+    </select>
+
+    <insert id="insertSysJob" parameterType="SysJob" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into sys_job
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="beanName != null  and beanName != ''">bean_name,
+            </if>
+            <if test="cronExpression != null  and cronExpression != ''">cron_expression,
+            </if>
+            <if test="isPause != null and isPause != ''">is_pause,
+            </if>
+            <if test="jobName != null  and jobName != ''">job_name,
+            </if>
+            <if test="methodName != null  and methodName != ''">method_name,
+            </if>
+            <if test="jobParams != null  and jobParams != ''">job_params,
+            </if>
+            <if test="remark != null  and remark != ''">remark,
+            </if>
+            <if test="createTime != null ">create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="beanName != null  and beanName != ''">#{beanName},
+            </if>
+            <if test="cronExpression != null  and cronExpression != ''">#{cronExpression},
+            </if>
+            <if test="isPause != null and isPause != ''">#{isPause},
+            </if>
+            <if test="jobName != null  and jobName != ''">#{jobName},
+            </if>
+            <if test="methodName != null  and methodName != ''">#{methodName},
+            </if>
+            <if test="jobParams != null  and jobParams != ''">#{jobParams},
+            </if>
+            <if test="remark != null  and remark != ''">#{remark},
+            </if>
+            <if test="createTime != null ">#{createTime},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSysJob" parameterType="SysJob">
+        update sys_job
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="beanName != null  and beanName != ''">bean_name = #{beanName},
+            </if>
+            <if test="cronExpression != null  and cronExpression != ''">cron_expression = #{cronExpression},
+            </if>
+            <if test="isPause != null and isPause != ''">is_pause = #{isPause},
+            </if>
+            <if test="jobName != null  and jobName != ''">job_name = #{jobName},
+            </if>
+            <if test="methodName != null  and methodName != ''">method_name = #{methodName},
+            </if>
+            <if test="jobParams != null  and jobParams != ''">job_params = #{jobParams},
+            </if>
+            <if test="remark != null  and remark != ''">remark = #{remark},
+            </if>
+            <if test="createTime != null ">create_time = #{createTime},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysJobById" parameterType="Long">
+        delete from sys_job where id = #{id}
+    </delete>
+
+    <delete id="deleteSysJobByIds" parameterType="String">
+        delete from sys_job where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

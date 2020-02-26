@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.mapper.SysUserCourseMapper">
+
+    <resultMap type="SysUserCourse" id="SysUserCourseResult">
+        <result property="userId" column="user_id"/>
+        <result property="courseId" column="course_id"/>
+    </resultMap>
+
+    <sql id="selectSysUserCourseVo">
+        select user_id, course_id from sys_user_course
+    </sql>
+
+    <select id="selectSysUserCourseList" parameterType="SysUserCourse" resultMap="SysUserCourseResult">
+        <include refid="selectSysUserCourseVo"/>
+        <where>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="courseId != null ">and course_id = #{courseId}</if>
+        </where>
+    </select>
+
+    <insert id="insertSysUserCourse" parameterType="SysUserCourse">
+        insert into sys_user_course
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="courseId != null ">course_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="courseId != null ">#{courseId},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchUserCourse">
+        insert into sys_user_course(user_id, course_id) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.userId},#{item.courseId})
+        </foreach>
+    </insert>
+
+    <update id="updateSysUserCourse" parameterType="SysUserCourse">
+        update sys_user_course
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="courseId != null ">course_id = #{courseId},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteSysUserCourseById" parameterType="Long">
+        delete from sys_user_course where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteSysUserCourseByIds" parameterType="String">
+        delete from sys_user_course where user_id in
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+
+</mapper>

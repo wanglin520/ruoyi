@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.mnt.mapper.SysDeployHistoryMapper">
+
+    <resultMap type="SysDeployHistory" id="SysDeployHistoryResult">
+        <result property="id" column="id"/>
+        <result property="appName" column="app_name"/>
+        <result property="deployDate" column="deploy_date"/>
+        <result property="deployUser" column="deploy_user"/>
+        <result property="ip" column="ip"/>
+        <result property="deployId" column="deploy_id"/>
+    </resultMap>
+
+    <sql id="selectSysDeployHistoryVo">
+        select id, app_name, deploy_date, deploy_user, ip, deploy_id from sys_deploy_history
+    </sql>
+
+    <select id="selectSysDeployHistoryList" parameterType="SysDeployHistory" resultMap="SysDeployHistoryResult">
+        <include refid="selectSysDeployHistoryVo"/>
+        <where>
+            <if test="appName != null  and appName != ''">
+                and app_name like concat('%', #{appName}, '%')
+            </if>
+            <if test="deployId != null">
+                and deploy_id = #{deployId}
+            </if>
+            order by deploy_date desc
+        </where>
+    </select>
+
+    <select id="selectSysDeployHistoryById" parameterType="String" resultMap="SysDeployHistoryResult">
+        <include refid="selectSysDeployHistoryVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSysDeployHistory" parameterType="SysDeployHistory">
+        insert into sys_deploy_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">id,
+            </if>
+            <if test="appName != null  and appName != ''">app_name,
+            </if>
+            <if test="deployDate != null ">deploy_date,
+            </if>
+            <if test="deployUser != null  and deployUser != ''">deploy_user,
+            </if>
+            <if test="ip != null  and ip != ''">ip,
+            </if>
+            <if test="deployId != null ">deploy_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">#{id},
+            </if>
+            <if test="appName != null  and appName != ''">#{appName},
+            </if>
+            <if test="deployDate != null ">#{deployDate},
+            </if>
+            <if test="deployUser != null  and deployUser != ''">#{deployUser},
+            </if>
+            <if test="ip != null  and ip != ''">#{ip},
+            </if>
+            <if test="deployId != null ">#{deployId},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSysDeployHistory" parameterType="SysDeployHistory">
+        update sys_deploy_history
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appName != null  and appName != ''">app_name = #{appName},
+            </if>
+            <if test="deployDate != null ">deploy_date = #{deployDate},
+            </if>
+            <if test="deployUser != null  and deployUser != ''">deploy_user = #{deployUser},
+            </if>
+            <if test="ip != null  and ip != ''">ip = #{ip},
+            </if>
+            <if test="deployId != null ">deploy_id = #{deployId},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysDeployHistoryById" parameterType="String">
+        delete from sys_deploy_history where id = #{id}
+    </delete>
+
+    <delete id="deleteSysDeployHistoryByIds" parameterType="String">
+        delete from sys_deploy_history where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

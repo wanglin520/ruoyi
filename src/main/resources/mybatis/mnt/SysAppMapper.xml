@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.mnt.mapper.SysAppMapper">
+
+    <resultMap type="SysApp" id="SysAppResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="uploadPath" column="upload_path"/>
+        <result property="deployPath" column="deploy_path"/>
+        <result property="backupPath" column="backup_path"/>
+        <result property="port" column="port"/>
+        <result property="startScript" column="start_script"/>
+        <result property="deployScript" column="deploy_script"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectSysAppVo">
+        select id, name, upload_path, deploy_path, backup_path, port, start_script, deploy_script, create_time from sys_app
+    </sql>
+
+    <select id="selectSysAppList" parameterType="SysApp" resultMap="SysAppResult">
+        <include refid="selectSysAppVo"/>
+        <where>
+            <if test="name != null  and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="port != null ">
+                and port = #{port}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSysAppById" parameterType="Long" resultMap="SysAppResult">
+        <include refid="selectSysAppVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="queryAppSelect" resultType="com.ruoyi.project.mnt.domain.SysApp">
+        <include refid="selectSysAppVo"/>
+    </select>
+
+    <insert id="insertSysApp" parameterType="SysApp" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into sys_app
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null  and name != ''">name,
+            </if>
+            <if test="uploadPath != null  and uploadPath != ''">upload_path,
+            </if>
+            <if test="deployPath != null  and deployPath != ''">deploy_path,
+            </if>
+            <if test="backupPath != null  and backupPath != ''">backup_path,
+            </if>
+            <if test="port != null ">port,
+            </if>
+            <if test="startScript != null  and startScript != ''">start_script,
+            </if>
+            <if test="deployScript != null  and deployScript != ''">deploy_script,
+            </if>
+            <if test="createTime != null ">create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null  and name != ''">#{name},
+            </if>
+            <if test="uploadPath != null  and uploadPath != ''">#{uploadPath},
+            </if>
+            <if test="deployPath != null  and deployPath != ''">#{deployPath},
+            </if>
+            <if test="backupPath != null  and backupPath != ''">#{backupPath},
+            </if>
+            <if test="port != null ">#{port},
+            </if>
+            <if test="startScript != null  and startScript != ''">#{startScript},
+            </if>
+            <if test="deployScript != null  and deployScript != ''">#{deployScript},
+            </if>
+            <if test="createTime != null ">#{createTime},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSysApp" parameterType="SysApp">
+        update sys_app
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="uploadPath != null and uploadPath != ''">
+                upload_path = #{uploadPath},
+            </if>
+            <if test="deployPath != null and deployPath != ''">
+                deploy_path = #{deployPath},
+            </if>
+            <if test="backupPath != null and backupPath != ''">
+                backup_path = #{backupPath},
+            </if>
+            <if test="port != null">
+                port = #{port},
+            </if>
+            <if test="startScript != null and startScript != ''">
+                start_script = #{startScript},
+            </if>
+            <if test="deployScript != null and deployScript != ''">
+                deploy_script = #{deployScript},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysAppById" parameterType="Long">
+        delete from sys_app where id = #{id}
+    </delete>
+
+    <delete id="deleteSysAppByIds" parameterType="String">
+        delete from sys_app where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

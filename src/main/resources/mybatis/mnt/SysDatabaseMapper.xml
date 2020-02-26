@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.mnt.mapper.SysDatabaseMapper">
+
+    <resultMap type="SysDatabase" id="SysDatabaseResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="jdbcUrl" column="jdbc_url"/>
+        <result property="userName" column="user_name"/>
+        <result property="pwd" column="pwd"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectSysDatabaseVo">
+        select id, name, jdbc_url, user_name, pwd, create_time from sys_database
+    </sql>
+
+    <select id="selectSysDatabaseList" parameterType="SysDatabase" resultMap="SysDatabaseResult">
+        <include refid="selectSysDatabaseVo"/>
+        <where>
+            <if test="name != null  and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSysDatabaseById" parameterType="String" resultMap="SysDatabaseResult">
+        <include refid="selectSysDatabaseVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSysDatabase" parameterType="SysDatabase">
+        insert into sys_database
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">id,
+            </if>
+            <if test="name != null  and name != ''">name,
+            </if>
+            <if test="jdbcUrl != null  and jdbcUrl != ''">jdbc_url,
+            </if>
+            <if test="userName != null  and userName != ''">user_name,
+            </if>
+            <if test="pwd != null  and pwd != ''">pwd,
+            </if>
+            <if test="createTime != null ">create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">#{id},
+            </if>
+            <if test="name != null  and name != ''">#{name},
+            </if>
+            <if test="jdbcUrl != null  and jdbcUrl != ''">#{jdbcUrl},
+            </if>
+            <if test="userName != null  and userName != ''">#{userName},
+            </if>
+            <if test="pwd != null  and pwd != ''">#{pwd},
+            </if>
+            <if test="createTime != null ">#{createTime},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSysDatabase" parameterType="SysDatabase">
+        update sys_database
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''">name = #{name},
+            </if>
+            <if test="jdbcUrl != null  and jdbcUrl != ''">jdbc_url = #{jdbcUrl},
+            </if>
+            <if test="userName != null  and userName != ''">user_name = #{userName},
+            </if>
+            <if test="pwd != null  and pwd != ''">pwd = #{pwd},
+            </if>
+            <if test="createTime != null ">create_time = #{createTime},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysDatabaseById" parameterType="String">
+        delete from sys_database where id = #{id}
+    </delete>
+
+    <delete id="deleteSysDatabaseByIds" parameterType="String">
+        delete from sys_database where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

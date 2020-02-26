@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.mnt.mapper.SysDeployMapper">
+
+    <resultMap type="SysDeploy" id="SysDeployResult">
+        <result property="id" column="id"/>
+        <result property="appId" column="app_id"/>
+        <result property="serverId" column="server_id"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <association property="sysApp" column="app_id" javaType="SysApp" resultMap="SysAppResult"/>
+        <association property="sysServer" column="server_id" javaType="SysServer" resultMap="SysServerResult"/>
+    </resultMap>
+
+    <resultMap type="SysApp" id="SysAppResult">
+        <result property="id" column="id"/>
+        <result property="name" column="app_name"/>
+        <result property="uploadPath" column="upload_path"/>
+        <result property="deployPath" column="deploy_path"/>
+        <result property="backupPath" column="backup_path"/>
+        <result property="port" column="port"/>
+        <result property="startScript" column="start_script"/>
+        <result property="deployScript" column="deploy_script"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <resultMap type="SysServer" id="SysServerResult">
+        <result property="id" column="id"/>
+        <result property="account" column="account"/>
+        <result property="ip" column="ip"/>
+        <result property="name" column="server_name"/>
+        <result property="password" column="password"/>
+        <result property="port" column="port"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectSysDeployVo">
+        select id, app_id, server_id, status, create_time from sys_deploy
+    </sql>
+
+    <select id="selectSysDeployList" parameterType="SysDeploy" resultMap="SysDeployResult">
+        select
+            d.id, d.app_id, d.server_id, d.create_time, d.status,
+            a.name as app_name, s.name as server_name
+        from sys_deploy d
+        left join sys_app a on d.app_id = a.id
+        left join sys_server s on d.server_id = s.id
+        <where>
+            <if test="appId != null">
+                and d.app_id = #{appId}
+            </if>
+            <if test="serverId != null">
+                and d.server_id = #{serverId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSysDeployById" parameterType="Long" resultMap="SysDeployResult">
+        <include refid="selectSysDeployVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSysDeploy" parameterType="SysDeploy" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into sys_deploy
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appId != null ">app_id,
+            </if>
+            <if test="serverId != null ">server_id,
+            </if>
+            <if test="status != null and status != ''">status,
+            </if>
+            <if test="createTime != null ">create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="appId != null ">#{appId},
+            </if>
+            <if test="serverId != null ">#{serverId},
+            </if>
+            <if test="status != null and status != ''">#{status},
+            </if>
+            <if test="createTime != null ">#{createTime},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSysDeploy" parameterType="SysDeploy">
+        update sys_deploy
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appId != null ">app_id = #{appId},
+            </if>
+            <if test="serverId != null ">server_id = #{serverId},
+            </if>
+            <if test="status != null and status != ''">#{status},
+            </if>
+            <if test="createTime != null ">create_time = #{createTime},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysDeployById" parameterType="Long">
+        delete from sys_deploy where id = #{id}
+    </delete>
+
+    <delete id="deleteSysDeployByIds" parameterType="String">
+        delete from sys_deploy where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
